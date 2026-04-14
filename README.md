@@ -22,15 +22,14 @@ This API was engineered with a strict focus on **reliability, testability, and d
 ## API Endpoints Summary
 
 ### Account Management
-* \`POST /accounts\` - Create a new account.
-* \`GET /accounts/:accountId/balance\` - Retrieve the current balance and status.
-* \`PATCH /accounts/:accountId/block\` - Block or unblock an account (requires a reason).
+* `POST /accounts` - Create a new account.
+* `GET /accounts/:accountId/balance` - Retrieve the current balance and status.
+* `PATCH /accounts/:accountId/block` - Block or unblock an account (requires a reason).
 
 ### Transactions
-* \`POST /accounts/:accountId/deposit\` - Deposit funds into an active account.
-* \`POST /accounts/:accountId/withdraw\` - Withdraw funds (validates balance and daily limits).
-* \`GET /accounts/:accountId/statement\` - Retrieve transaction history (Supports optional `startDate` and `endDate` query parameters in `YYYY-MM-DD` format).
-
+* `POST /transactions/:accountId/deposit` - Deposit funds into an active account.
+* `POST /transactions/:accountId/withdraw` - Withdraw funds (validates balance and daily limits).
+* `GET /transactions/:accountId/statement` - Retrieve transaction history (Supports optional `startDate` and `endDate` query parameters in `YYYY-MM-DD` format).
 ---
 
 ## Execution Manual
