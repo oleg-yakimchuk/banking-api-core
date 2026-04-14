@@ -79,4 +79,64 @@ describe('Account API Integration Tests', () => {
             expect(response.body.data.newBalance).toBe(400); // 500 - 100 = 400
         });
     });
+
+    describe('GET /accounts/:accountId/balance (Balance Inquiry)', () => {
+        it('should return 400 if accountId is not a number (Zod Validation)', async () => {
+            const response = await request(app).get('/accounts/apple/balance');
+            expect(response.status).toBe(400);
+        });
+
+        it('should successfully retrieve the account balance', async () => {
+            const response = await request(app).get(`/accounts/${testAccountId}/balance`);
+            expect(response.status).toBe(200);
+            expect(response.body.data).toHaveProperty('balance');
+            expect(response.body.data.balance).toBe(400); // 500 deposit - 100 withdrawal
+        });
+    });
+
+    describe('PATCH /accounts/:accountId/block (Account Blocking)', () => {
+        it('should reject blocking if reason is missing (Zod Validation)', async () => {
+            const response = await request(app)
+                .patch(`/accounts/${testAccountId}/block`)
+                .send({ block: true }); // Missing 'reason'
+
+            expect(response.status).toBe(400);
+            expect(response.body.details[0]).toContain('reason');
+        });
+
+        it('should successfully block the account', async () => {
+            const response = await request(app)
+                .patch(`/accounts/${testAccountId}/block`)
+                .send({ block: true, reason: 'Suspicious activity detected' });
+
+            expect(response.status).toBe(200);
+            expect(response.body.data.message).toContain('blocked');
+        });
+    });
+
+    describe('GET /accounts/:accountId/statement (Account Statement)', () => {
+        it('should reject invalid date formats (Zod Validation)', async () => {
+            const response = await request(app)
+                .get(`/accounts/${testAccountId}/statement?startDate=01-01-2023`); // Wrong format
+
+            expect(response.status).toBe(400);
+        });
+
+        it('should reject if startDate is after endDate (Zod Logic Refinement)', async () => {
+            const response = await request(app)
+                .get(`/accounts/${testAccountId}/statement?startDate=2024-12-31&endDate=2024-01-01`);
+
+            expect(response.status).toBe(400);
+            expect(response.body.details[0]).toContain('startDate must be before or equal to endDate');
+        });
+
+        it('should successfully retrieve the statement', async () => {
+            const response = await request(app).get(`/accounts/${testAccountId}/statement`);
+
+            expect(response.status).toBe(200);
+            expect(response.body.data).toHaveProperty('transactions');
+            expect(Array.isArray(response.body.data.transactions)).toBe(true);
+            expect(response.body.data.transactionCount).toBe(2);
+        });
+    });
 });

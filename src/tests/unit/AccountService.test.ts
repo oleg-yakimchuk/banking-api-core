@@ -137,4 +137,45 @@ describe('AccountService Unit Tests', () => {
             expect(mockRepo.updateAccountStatus).toHaveBeenCalledWith(1, false, 'Cleared');
         });
     });
+
+    describe('getBalance()', () => {
+        it('should return balance for a valid account', async () => {
+            mockRepo.findById.mockResolvedValue({ balance: 750, activeFlag: 1 });
+
+            const result = await accountService.getBalance(1);
+
+            expect(result.balance).toBe(750);
+            expect(result.active).toBe(true);
+            expect(mockRepo.findById).toHaveBeenCalledWith(1);
+        });
+
+        it('should throw AccountNotFoundException for invalid account', async () => {
+            mockRepo.findById.mockResolvedValue(undefined);
+
+            await expect(accountService.getBalance(999))
+                .rejects.toThrow(AccountNotFoundException);
+        });
+    });
+
+    describe('getStatement()', () => {
+        it('should return a statement with transactions', async () => {
+            mockRepo.findById.mockResolvedValue({ activeFlag: 1 });
+            mockRepo.getStatement.mockResolvedValue([
+                { transactionId: 1, value: 500, type: 'DEPOSIT' }
+            ]);
+
+            const result = await accountService.getStatement(1, '2023-01-01', '2023-12-31');
+
+            expect(result.transactionCount).toBe(1);
+            expect(result.transactions[0].value).toBe(500);
+            expect(mockRepo.getStatement).toHaveBeenCalledWith(1, '2023-01-01', '2023-12-31');
+        });
+
+        it('should throw AccountNotFoundException for invalid account', async () => {
+            mockRepo.findById.mockResolvedValue(undefined);
+
+            await expect(accountService.getStatement(999))
+                .rejects.toThrow(AccountNotFoundException);
+        });
+    });
 });
