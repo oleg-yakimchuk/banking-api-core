@@ -1,4 +1,4 @@
-// src/database/init.ts
+
 import { db } from './db';
 import { logger } from '../utils/logger';
 
@@ -65,7 +65,6 @@ const initializeDatabase = () => {
         });
     });
 
-    // Close the connection when the script finishes
     db.close();
 };
 
