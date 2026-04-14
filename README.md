@@ -41,22 +41,22 @@ This API was engineered with a strict focus on **reliability, testability, and d
 
 ### 1. Installation
 Clone the repository and install the dependencies:
-\`\`\`bash
+```bash
 npm install
-\`\`\`
+```
 
 ### 2. Database Initialization
 This project uses a local SQLite database. To create the database file, build the tables, and seed the initial Person record, run:
-\`\`\`bash
+```bash
 npm run db:init
-\`\`\`
+```
 *(This will generate a `database.sqlite` file in your project root).*
 
 ### 3. Running the Server
 To start the API in development mode with live logging (via Morgan and Pino):
-\`\`\`bash
+```bash
 npm run dev
-\`\`\`
+```
 The server will start on `http://localhost:3000`.
 
 ---
@@ -67,6 +67,6 @@ The application features near 100% test coverage using **Vitest** and **Supertes
 
 ### Run All Tests
 To execute both the Integration Tests (HTTP routing/validation) and Unit Tests (Business Logic/Mocking):
-\`\`\`bash
+```bash
 npm run test
-\`\`\`
+```
