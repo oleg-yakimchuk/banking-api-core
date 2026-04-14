@@ -14,6 +14,18 @@ export class AccountService {
         this.accountRepo = new AccountRepository();
     }
 
+    async getStatement(accountId: number, startDate?: string, endDate?: string) {
+        const account = await this.accountRepo.findById(accountId);
+        if (!account) throw new AccountNotFoundException();
+
+        const transactions = await this.accountRepo.getStatement(accountId, startDate, endDate);
+        return {
+            accountId,
+            transactionCount: transactions.length,
+            transactions
+        };
+    }
+
     async createAccount(personId: number, dailyLimit: number, accountType: number) {
         const personExists = await this.accountRepo.checkPersonExists(personId);
         if (!personExists) {

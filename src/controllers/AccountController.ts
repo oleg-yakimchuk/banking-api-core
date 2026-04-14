@@ -6,6 +6,19 @@ const accountService = new AccountService();
 
 export class AccountController {
 
+    static async getStatement(req: Request, res: Response, next: NextFunction): Promise<void> {
+        try {
+            const accountId = parseInt(req.params.accountId as string, 10);
+
+            const { startDate, endDate } = req.query as { startDate?: string, endDate?: string };
+
+            const result = await accountService.getStatement(accountId, startDate, endDate);
+            res.status(200).json({ status: 'success', data: result });
+        } catch (error) {
+            next(error);
+        }
+    }
+
     static async createAccount(req: Request, res: Response, next: NextFunction): Promise<void> {
         try {
             const { personId, dailyWithdrawalLimit, accountType } = req.body;

@@ -37,3 +37,19 @@ export const accountIdParamSchema = z.object({
         accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')
     })
 });
+
+// Schema for GET /accounts/:accountId/statement
+export const statementQuerySchema = z.object({
+    params: z.object({
+        accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')
+    }),
+    query: z.object({
+        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'Start date must be YYYY-MM-DD').optional(),
+        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'End date must be YYYY-MM-DD').optional(),
+    }).refine(data => {
+        if (data.startDate && data.endDate) {
+            return new Date(data.startDate) <= new Date(data.endDate);
+        }
+        return true;
+    }, { message: "startDate must be before or equal to endDate", path: ["startDate"] })
+});
