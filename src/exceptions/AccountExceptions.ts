@@ -17,3 +17,9 @@ export class AccountBlockedException extends AppError {
         super(message, 403);
     }
 }
+
+export class PersonNotFoundException extends AppError {
+    constructor(message: string = 'The specified Person ID does not exist in the system.') {
+        super(message, 404);
+    }
+}

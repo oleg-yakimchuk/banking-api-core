@@ -3,7 +3,8 @@ import { AccountRepository } from '../repositories/AccountRepository';
 import {
     AccountNotFoundException,
     AccountBlockedException,
-    InsufficientFundsException
+    InsufficientFundsException,
+    PersonNotFoundException
 } from '../exceptions/AccountExceptions';
 
 export class AccountService {
@@ -14,6 +15,11 @@ export class AccountService {
     }
 
     async createAccount(personId: number, dailyLimit: number, accountType: number) {
+        const personExists = await this.accountRepo.checkPersonExists(personId);
+        if (!personExists) {
+            throw new PersonNotFoundException();
+        }
+
         const accountId = await this.accountRepo.createAccount(personId, dailyLimit, accountType);
         return { accountId, message: 'Account created successfully' };
     }

@@ -3,6 +3,15 @@ import { db } from '../database/db';
 
 export class AccountRepository {
 
+    async checkPersonExists(personId: number): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            db.get(`SELECT 1 FROM persons WHERE personId = ?`, [personId], (err, row) => {
+                if (err) reject(err);
+                else resolve(!!row);
+            });
+        });
+    }
+
 
     async findById(accountId: number): Promise<any> {
         return new Promise((resolve, reject) => {
