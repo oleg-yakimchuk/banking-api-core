@@ -30,3 +30,10 @@ export const blockAccountSchema = z.object({
         accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')
     })
 });
+
+// Schema for routes that only need an accountId in the URL
+export const accountIdParamSchema = z.object({
+    params: z.object({
+        accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')
+    })
+});
