@@ -1,7 +1,7 @@
-
+import { IAccountRepository } from '../interfaces/IAccountRepository';
 import { db } from '../database/db';
 
-export class AccountRepository {
+export class AccountRepository implements IAccountRepository{
 
     async getStatement(accountId: number, startDate?: string, endDate?: string): Promise<any[]> {
         return new Promise((resolve, reject) => {

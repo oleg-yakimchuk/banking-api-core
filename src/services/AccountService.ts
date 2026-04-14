@@ -1,4 +1,5 @@
-
+import { IAccountRepository } from '../interfaces/IAccountRepository';
+import { IAccountService } from '../interfaces/IAccountService';
 import { AccountRepository } from '../repositories/AccountRepository';
 import {
     AccountNotFoundException,
@@ -7,12 +8,8 @@ import {
     PersonNotFoundException
 } from '../exceptions/AccountExceptions';
 
-export class AccountService {
-    private accountRepo: AccountRepository;
-
-    constructor() {
-        this.accountRepo = new AccountRepository();
-    }
+export class AccountService implements IAccountService{
+    constructor(private accountRepo: IAccountRepository) {}
 
     async getStatement(accountId: number, startDate?: string, endDate?: string) {
         const account = await this.accountRepo.findById(accountId);

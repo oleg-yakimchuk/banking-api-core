@@ -1,8 +1,10 @@
-
 import { Request, Response, NextFunction } from 'express';
 import { AccountService } from '../services/AccountService';
+import { AccountRepository } from '../repositories/AccountRepository';
 
-const accountService = new AccountService();
+const accountRepository = new AccountRepository();
+const accountService = new AccountService(accountRepository);
+
 
 export class AccountController {
 
