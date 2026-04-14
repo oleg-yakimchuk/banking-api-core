@@ -3,6 +3,7 @@ import { Request, Response, NextFunction } from 'express';
 import { AppError } from '../exceptions/AppError';
 import { logger } from '../utils/logger';
 
+/** Global middleware to catch exceptions and format standard API error responses. */
 export const errorHandler = (
     err: Error,
     req: Request,

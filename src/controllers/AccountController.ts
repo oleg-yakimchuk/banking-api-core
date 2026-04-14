@@ -8,6 +8,7 @@ import { logger } from '../utils/logger';
 const accountRepository = new AccountRepository();
 const accountService = new AccountService(accountRepository);
 
+/** Orchestrates HTTP requests, passing validated payloads to the AccountService. */
 export class AccountController {
 
     static createAccount = catchAsync(async (req: Request, res: Response) => {

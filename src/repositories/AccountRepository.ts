@@ -1,6 +1,9 @@
 import { IAccountRepository } from '../interfaces/IAccountRepository';
 import { db } from '../database/db';
 
+/**
+ * Data access layer for SQLite. Exclusively handles all SQL execution.
+ */
 export class AccountRepository implements IAccountRepository{
 
     async getStatement(accountId: number, startDate?: string, endDate?: string): Promise<any[]> {
@@ -57,7 +60,7 @@ export class AccountRepository implements IAccountRepository{
             );
         });
     }
-
+    /** Executes ACID-compliant deposits/withdrawals with strict rollback on failure. */
     async executeFinancialTransaction(accountId: number, amount: number, type: 'DEPOSIT' | 'WITHDRAWAL'): Promise<void> {
         return new Promise((resolve, reject) => {
             db.serialize(() => {

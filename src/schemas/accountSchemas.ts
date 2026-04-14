@@ -1,7 +1,9 @@
 
 import { z } from 'zod';
 
-// Schema for POST /accounts
+/** Zod schemas for fail-fast API boundary validation. */
+
+/** Schema for POST /accounts */
 export const createAccountSchema = z.object({
     body: z.object({
         personId: z.number().int().positive('Person ID must be a positive integer'),
@@ -10,7 +12,7 @@ export const createAccountSchema = z.object({
     })
 });
 
-// Schema for POST /accounts/:accountId/deposit AND withdraw
+/** Schema for POST /accounts/:accountId/deposit AND withdraw */
 export const transactionSchema = z.object({
     body: z.object({
         amount: z.number().positive('Amount must be strictly greater than 0')
@@ -20,7 +22,7 @@ export const transactionSchema = z.object({
     })
 });
 
-// Schema for PATCH /accounts/:accountId/block
+/** Schema for PATCH /accounts/:accountId/block */
 export const blockAccountSchema = z.object({
     body: z.object({
         block: z.boolean({ message: 'Block status (true/false) is required' }),
@@ -31,14 +33,14 @@ export const blockAccountSchema = z.object({
     })
 });
 
-// Schema for routes that only need an accountId in the URL
+/** Schema for routes that only need an accountId in the URL */
 export const accountIdParamSchema = z.object({
     params: z.object({
         accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')
     })
 });
 
-// Schema for GET /accounts/:accountId/statement
+/** Schema for GET /accounts/:accountId/statement */
 export const statementQuerySchema = z.object({
     params: z.object({
         accountId: z.string().regex(/^\d+$/, 'Account ID must be a valid number')

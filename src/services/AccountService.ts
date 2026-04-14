@@ -11,6 +11,7 @@ import { logger } from '../utils/logger';
 export class AccountService implements IAccountService {
     constructor(private accountRepo: IAccountRepository) {}
 
+    /** Creates a new account, ensuring the associated person exists. */
     async createAccount(personId: number, dailyLimit: number, accountType: number) {
         logger.debug({ personId, dailyLimit, accountType }, 'Service: Starting account creation');
 
@@ -24,7 +25,7 @@ export class AccountService implements IAccountService {
         logger.debug({ accountId, personId }, 'Service: Account created successfully');
         return { accountId, message: 'Account created successfully' };
     }
-
+    /** Retrieves account balance and active status. */
     async getBalance(accountId: number) {
         logger.debug({ accountId }, 'Service: Fetching balance');
 
@@ -37,7 +38,7 @@ export class AccountService implements IAccountService {
         logger.debug({ accountId, balance: account.balance }, 'Service: Balance fetched successfully');
         return { accountId, balance: account.balance, active: account.activeFlag === 1 };
     }
-
+    /** Processes a deposit. Rejects if the account is blocked. */
     async deposit(accountId: number, amount: number) {
         logger.debug({ accountId, amount }, 'Service: Starting deposit');
 
@@ -55,7 +56,7 @@ export class AccountService implements IAccountService {
         logger.debug({ accountId, amount, newBalance: account.balance + amount }, 'Service: Deposit successful');
         return { message: 'Deposit successful', newBalance: account.balance + amount };
     }
-
+    /** Processes a withdrawal, validating balance, daily limits, and block status. */
     async withdraw(accountId: number, amount: number) {
         logger.debug({ accountId, amount }, 'Service: Starting withdrawal process');
 
@@ -83,7 +84,7 @@ export class AccountService implements IAccountService {
 
         return { message: 'Withdrawal successful', newBalance: account.balance - amount };
     }
-
+    /** Blocks or unblocks an account for a specified reason. */
     async toggleAccountStatus(accountId: number, block: boolean, reason: string) {
         logger.debug({ accountId, block, reason }, 'Service: Toggling account status');
 
@@ -97,7 +98,7 @@ export class AccountService implements IAccountService {
         logger.debug({ accountId, block }, 'Service: Account status toggled successfully');
         return { message: `Account successfully ${block ? 'blocked' : 'unblocked'}.` };
     }
-
+    /** Retrieves transaction history, supporting optional date-range filters. */
     async getStatement(accountId: number, startDate?: string, endDate?: string) {
         logger.debug({ accountId, startDate, endDate }, 'Service: Fetching account statement');
 
