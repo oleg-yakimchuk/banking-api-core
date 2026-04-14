@@ -39,10 +39,10 @@ describe('Account API Integration Tests', () => {
         });
     });
 
-    describe('POST /accounts/:accountId/deposit (Deposits)', () => {
+    describe('POST /transactions/:accountId/deposit (Deposits)', () => {
         it('should reject a negative deposit amount', async () => {
             const response = await request(app)
-                .post(`/accounts/${testAccountId}/deposit`)
+                .post(`/transactions/${testAccountId}/deposit`)
                 .send({ amount: -50 });
 
             expect(response.status).toBe(400);
@@ -51,7 +51,7 @@ describe('Account API Integration Tests', () => {
 
         it('should successfully deposit money into the account', async () => {
             const response = await request(app)
-                .post(`/accounts/${testAccountId}/deposit`)
+                .post(`/transactions/${testAccountId}/deposit`)
                 .send({ amount: 500 });
 
             expect(response.status).toBe(200);
@@ -60,11 +60,11 @@ describe('Account API Integration Tests', () => {
         });
     });
 
-    describe('POST /accounts/:accountId/withdraw (Withdrawals)', () => {
+    describe('POST /transactions/:accountId/withdraw (Withdrawals)', () => {
         it('should reject a withdrawal that exceeds the balance (Business Logic)', async () => {
             const response = await request(app)
-                .post(`/accounts/${testAccountId}/withdraw`)
-                .send({ amount: 9999 }); // They only have 500!
+                .post(`/transactions/${testAccountId}/withdraw`)
+                .send({ amount: 9999 });
 
             expect(response.status).toBe(400);
             expect(response.body.message).toBe('Insufficient funds for this transaction.');
@@ -72,11 +72,11 @@ describe('Account API Integration Tests', () => {
 
         it('should successfully withdraw money', async () => {
             const response = await request(app)
-                .post(`/accounts/${testAccountId}/withdraw`)
+                .post(`/transactions/${testAccountId}/withdraw`)
                 .send({ amount: 100 });
 
             expect(response.status).toBe(200);
-            expect(response.body.data.newBalance).toBe(400); // 500 - 100 = 400
+            expect(response.body.data.newBalance).toBe(400);
         });
     });
 
@@ -114,24 +114,24 @@ describe('Account API Integration Tests', () => {
         });
     });
 
-    describe('GET /accounts/:accountId/statement (Account Statement)', () => {
+    describe('GET /transactions/:accountId/statement (Account Statement)', () => {
         it('should reject invalid date formats (Zod Validation)', async () => {
             const response = await request(app)
-                .get(`/accounts/${testAccountId}/statement?startDate=01-01-2023`); // Wrong format
+                .get(`/transactions/${testAccountId}/statement?startDate=01-01-2023`);
 
             expect(response.status).toBe(400);
         });
 
         it('should reject if startDate is after endDate (Zod Logic Refinement)', async () => {
             const response = await request(app)
-                .get(`/accounts/${testAccountId}/statement?startDate=2024-12-31&endDate=2024-01-01`);
+                .get(`/transactions/${testAccountId}/statement?startDate=2024-12-31&endDate=2024-01-01`);
 
             expect(response.status).toBe(400);
             expect(response.body.details[0]).toContain('startDate must be before or equal to endDate');
         });
 
         it('should successfully retrieve the statement', async () => {
-            const response = await request(app).get(`/accounts/${testAccountId}/statement`);
+            const response = await request(app).get(`/transactions/${testAccountId}/statement`);
 
             expect(response.status).toBe(200);
             expect(response.body.data).toHaveProperty('transactions');
